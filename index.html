@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#040808">
+<meta name="robots" content="noindex, nofollow">
+<title>ساعة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: the first screen is a watch face. Tapping the date opens one split card: the account
+   forms on the reading side, a teal panel with a mashrabiya lattice (a confessional screen) beside it. */
+:root {
+  --font-display: "Reem Kufi", "Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --bg: #E7EEED;
+  --card: #FFFFFF;
+  --field: #F3F7F6;
+  --ink: #0F1F1E;
+  --muted: #536664;
+  --line: #D0DCDA;
+  --accent: #0D6B65;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #D7EDEA;
+  --danger: #B3261E;
+  --warn: #A05A00;
+  --ok: #17794A;
+  --shadow: 0 1px 2px rgba(15, 31, 30, .06), 0 28px 56px -28px rgba(15, 31, 30, .28);
+
+  --panel: #0C3534;
+  --panel-ink: #E8F3F1;
+  --panel-muted: #A3C0BC;
+  --panel-line: rgba(232, 243, 241, .16);
+  --bubble: rgba(232, 243, 241, .08);
+  --lattice: rgba(232, 243, 241, .11);
+  --bright: #5ED6C8;
+  --bright-ink: #06231F;
+
+  direction: rtl;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1313;
+    --card: #111C1C;
+    --field: #0C1616;
+    --ink: #E8F1F0;
+    --muted: #94ABA8;
+    --line: #243736;
+    --accent: #4CC9BC;
+    --accent-ink: #05211F;
+    --accent-soft: #163331;
+    --danger: #FF8F86;
+    --warn: #F0B35C;
+    --ok: #6FD6A0;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 28px 56px -28px rgba(0, 0, 0, .7);
+    --panel: #0B2827;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1313;
+  --card: #111C1C;
+  --field: #0C1616;
+  --ink: #E8F1F0;
+  --muted: #94ABA8;
+  --line: #243736;
+  --accent: #4CC9BC;
+  --accent-ink: #05211F;
+  --accent-soft: #163331;
+  --danger: #FF8F86;
+  --warn: #F0B35C;
+  --ok: #6FD6A0;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 28px 56px -28px rgba(0, 0, 0, .7);
+  --panel: #0B2827;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  padding-inline: 16px;
+  padding-block: 32px;
+}
+button, input { font-family: inherit; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[tabindex="-1"]:focus { outline: none; }
+
+.shell {
+  max-width: 1080px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .92fr);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Form side ---------- */
+.formside {
+  min-width: 0;
+  padding: clamp(24px, 5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.view { display: grid; gap: 24px; min-width: 0; }
+.head { display: grid; gap: 8px; }
+.head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.25rem);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.head p { margin: 0; color: var(--muted); text-wrap: pretty; }
+.head bdi { color: var(--ink); font-weight: 600; }
+
+form { display: grid; gap: 20px; }
+.field { display: grid; gap: 8px; min-width: 0; }
+.label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.label-row label, .label-row .lbl { font-weight: 600; font-size: .9375rem; }
+.link-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; padding: 4px 0; cursor: pointer;
+  color: var(--accent); font-size: .875rem; font-weight: 500;
+}
+.link-btn svg { width: 16px; height: 16px; }
+.link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.control { position: relative; }
+.control input {
+  width: 100%;
+  height: 54px;
+  padding-inline: 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  background: var(--field);
+  color: var(--ink);
+  font-size: 1rem;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.control input::placeholder { color: var(--muted); opacity: .7; }
+.control input:hover { border-color: var(--muted); }
+.control input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--card);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.control input[aria-invalid="true"] { border-color: var(--danger); }
+.control input[aria-invalid="true"]:focus-visible { box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 22%, transparent); }
+.control input.ltr { direction: ltr; text-align: right; }
+.control input.has-eye { padding-left: 52px; }
+.control input.code-in { direction: ltr; text-align: center; font-family: var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+
+.eye {
+  position: absolute; left: 6px; top: 50%; transform: translateY(-50%);
+  width: 42px; height: 42px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--muted); cursor: pointer;
+  display: grid; place-items: center;
+}
+.eye:hover { background: var(--accent-soft); color: var(--accent); }
+.eye svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.eye .off { display: none; }
+.eye[aria-pressed="true"] .on { display: none; }
+.eye[aria-pressed="true"] .off { display: block; }
+
+.hint { margin: 0; font-size: .875rem; color: var(--muted); }
+.error { margin: 0; font-size: .875rem; color: var(--danger); font-weight: 500; }
+.form-error { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--danger); background: color-mix(in srgb, var(--danger) 8%, transparent); }
+
+.strength { display: flex; align-items: center; gap: 12px; }
+.meter { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.meter i { height: 5px; border-radius: 3px; background: var(--line); transition: background .2s; }
+.meter[data-level="1"] i:nth-child(-n+1) { background: var(--danger); }
+.meter[data-level="2"] i:nth-child(-n+2) { background: var(--warn); }
+.meter[data-level="3"] i:nth-child(-n+3) { background: var(--accent); }
+.meter[data-level="4"] i { background: var(--ok); }
+.meter-label { min-width: 4.5rem; text-align: end; font-size: .875rem; font-weight: 500; color: var(--muted); }
+
+.check { display: flex; gap: 12px; align-items: flex-start; }
+.check input { flex: none; width: 20px; height: 20px; margin: 5px 0 0; accent-color: var(--accent); cursor: pointer; }
+.check label { font-size: .9375rem; color: var(--muted); }
+.check-wrap { display: grid; gap: 6px; }
+
+.submit {
+  height: 56px; border: 0; border-radius: 14px;
+  background: var(--accent); color: var(--accent-ink);
+  font-size: 1.0625rem; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  transition: transform .12s, filter .15s, opacity .15s;
+}
+.submit:hover { filter: brightness(1.07); }
+.submit:active { transform: translateY(1px); }
+.submit:disabled { cursor: not-allowed; filter: none; opacity: .55; }
+.submit.busy { cursor: progress; opacity: .85; }
+.spin {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid currentColor; border-inline-end-color: transparent;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.alt { margin: 4px 0 0; text-align: center; color: var(--muted); font-size: .9375rem; }
+.alt a { font-weight: 600; }
+.privacy-note {
+  margin: 0; display: flex; gap: 10px; align-items: flex-start;
+  font-size: .8125rem; color: var(--muted);
+}
+.privacy-note svg { flex: none; width: 16px; height: 16px; margin-top: 4px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.ghost {
+  height: 48px; padding-inline: 20px; border-radius: 12px; cursor: pointer;
+  border: 1.5px solid var(--line); background: transparent; color: var(--ink); font-weight: 500; font-size: .9375rem;
+}
+.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.ghost.danger { color: var(--danger); }
+.ghost.danger:hover { border-color: var(--danger); color: var(--danger); }
+.danger-solid {
+  height: 48px; padding-inline: 20px; border-radius: 12px; cursor: pointer; border: 0;
+  background: var(--danger); color: var(--card); font-weight: 600; font-size: .9375rem;
+}
+.danger-solid:hover { filter: brightness(1.08); }
+.danger-solid:disabled { opacity: .6; cursor: progress; }
+
+.mark {
+  width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent);
+}
+.mark svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.mark.warn { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+
+.code-box {
+  display: grid; gap: 12px; padding: 20px 16px; border-radius: 16px;
+  border: 1.5px dashed var(--accent); background: var(--accent-soft);
+}
+.code-text {
+  direction: ltr; text-align: center; font-family: var(--font-mono); font-weight: 600;
+  font-size: clamp(1.1rem, .8rem + 1.6vw, 1.5rem); letter-spacing: .1em; word-break: break-all; user-select: all;
+}
+.callout { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--field); border: 1px solid var(--line); font-size: .875rem; color: var(--muted); }
+.callout strong { color: var(--ink); }
+.confirm-box { display: grid; gap: 14px; padding: 16px; border-radius: 14px; border: 1px solid var(--danger); background: color-mix(in srgb, var(--danger) 7%, transparent); }
+.confirm-box p { margin: 0; }
+
+/* ---------- Panel side ---------- */
+.panel {
+  position: relative; isolation: isolate; min-width: 0;
+  background: var(--panel); color: var(--panel-ink);
+  padding: clamp(24px, 4.5vw, 48px);
+  display: flex; flex-direction: column; gap: 32px; overflow: hidden;
+}
+.lattice { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; color: var(--lattice); }
+.panel::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to bottom, transparent 25%, var(--panel) 92%);
+}
+.brand { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1; }
+.brand svg { width: 40px; height: 40px; flex: none; }
+.pitch { display: grid; gap: 12px; }
+.pitch h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.2rem); line-height: 1.5; text-wrap: balance;
+}
+.pitch p { margin: 0; color: var(--panel-muted); max-width: 40ch; }
+
+.chat { display: grid; gap: 12px; margin-block-start: auto; }
+.chat-label { font-size: .8125rem; color: var(--panel-muted); }
+.msg {
+  max-width: 90%; padding: 12px 16px; border-radius: 18px; font-size: .9375rem; line-height: 1.7;
+  background: var(--bubble); border: 1px solid var(--panel-line); justify-self: start;
+  border-start-start-radius: 6px;
+}
+.msg b { display: block; font-size: .8125rem; font-weight: 500; color: var(--bright); }
+.msg.out {
+  justify-self: end; background: var(--bright); color: var(--bright-ink); border-color: transparent;
+  border-start-start-radius: 18px; border-start-end-radius: 6px;
+}
+.msg.out b { color: var(--bright-ink); opacity: .75; }
+.typing {
+  justify-self: start; display: inline-flex; gap: 5px; padding: 14px 16px; border-radius: 18px;
+  border-start-start-radius: 6px; background: var(--bubble); border: 1px solid var(--panel-line);
+}
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--panel-muted); animation: blink 1.2s infinite ease-in-out; }
+.typing i:nth-child(2) { animation-delay: .15s; }
+.typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 0%, 80%, 100% { opacity: .3; } 40% { opacity: 1; } }
+
+.points { margin: 0; display: grid; }
+.points div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 12px; padding-block: 12px; border-top: 1px solid var(--panel-line); }
+.points dt { font-weight: 600; }
+.points dd { margin: 0; color: var(--panel-muted); font-size: .9375rem; }
+
+@media (max-width: 860px) {
+  body { padding-block: 16px; }
+  .shell { grid-template-columns: minmax(0, 1fr); border-radius: 22px; }
+  .panel { order: -1; gap: 20px; }
+  .panel::after { display: none; }
+  .chat, .points { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
+
+/* ---------- Watch disguise: the first screen is a plain watch face ---------- */
+:root {
+  --w-strap: #26302F;
+  --w-case: #141C1B;
+  --w-rim: #3A4B49;
+  --w-screen: #040808;
+  --w-ink: #EAF4F3;
+  --w-dim: #7E9895;
+  --w-accent: #5ED6C8;
+  --w-chip: #0E1817;
+  --w-chip-line: #22302E;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --w-strap: #1B2928; --w-case: #243433; --w-rim: #536C69; --w-chip-line: #2A3B39; }
+}
+:root[data-theme="dark"] { --w-strap: #1B2928; --w-case: #243433; --w-rim: #536C69; --w-chip-line: #2A3B39; }
+
+.stage { min-height: 82svh; display: grid; place-items: center; overflow: hidden; padding-block: 8px; }
+.watch { position: relative; width: min(300px, 100%); }
+.strap {
+  position: absolute; left: 50%; translate: -50% 0; width: 62%; height: 220px; z-index: 0;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 18px, color-mix(in srgb, var(--w-ink) 9%, transparent) 18px 20px),
+    var(--w-strap);
+}
+.strap.top { bottom: calc(100% - 40px); -webkit-mask-image: linear-gradient(to top, #000 35%, transparent); mask-image: linear-gradient(to top, #000 35%, transparent); border-radius: 18px 18px 0 0; }
+.strap.bottom { top: calc(100% - 40px); -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent); mask-image: linear-gradient(to bottom, #000 35%, transparent); border-radius: 0 0 18px 18px; }
+.crown { position: absolute; right: -8px; top: 30%; width: 12px; height: 58px; border-radius: 0 7px 7px 0; background: var(--w-rim); z-index: 0; }
+.case {
+  position: relative; z-index: 1; width: 100%; aspect-ratio: 300 / 368; padding: 12px;
+  border-radius: 76px; background: var(--w-case); border: 2px solid var(--w-rim); box-shadow: var(--shadow);
+}
+.screen {
+  height: 100%; border-radius: 64px; background: var(--w-screen); color: var(--w-ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px 14px 18px; overflow: hidden;
+}
+.dial { width: 100%; height: auto; aspect-ratio: 1; display: block; flex: none; }
+.d-ring { fill: none; stroke: var(--w-chip-line); stroke-width: 1; }
+.d-tick { stroke: var(--w-dim); stroke-width: 1; stroke-linecap: round; }
+.d-tick.major { stroke: var(--w-ink); stroke-width: 2; }
+.d-num { fill: var(--w-ink); font-family: var(--font-display); font-size: 17px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+.d-digital { fill: var(--w-dim); font-family: var(--font-body); font-size: 11px; text-anchor: middle; }
+.d-hour, .d-min { stroke: var(--w-ink); stroke-linecap: round; }
+.d-hour { stroke-width: 5; }
+.d-min { stroke-width: 3.5; }
+.d-sec { stroke: var(--w-accent); stroke-width: 1.6; stroke-linecap: round; }
+.d-hub { fill: var(--w-accent); }
+.date-btn {
+  flex: none; height: 38px; padding-inline: 18px; border-radius: 19px; cursor: pointer;
+  border: 1px solid var(--w-chip-line); background: var(--w-chip); color: var(--w-ink);
+  font-family: var(--font-body); font-size: .875rem; font-weight: 500; white-space: nowrap;
+}
+.date-btn:hover { border-color: var(--w-rim); }
+.date-btn:active { transform: scale(.97); }
+.date-btn:focus-visible { outline-color: var(--w-accent); }
+
+.enter { animation: appIn .35s ease-out both; }
+@keyframes appIn { from { opacity: 0; transform: translateY(8px) scale(.985); } }
+
+.hide-app {
+  position: absolute; top: 16px; inset-inline-end: 16px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding-inline: 12px; border-radius: 18px;
+  border: 1px solid var(--panel-line); background: var(--bubble); color: var(--panel-ink);
+  font-size: .8125rem; cursor: pointer;
+}
+.hide-app:hover { background: var(--panel-line); }
+.hide-app:focus-visible { outline-color: var(--bright); }
+.hide-app svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ====================================================================
+   Base resets (the standalone page has no host skeleton)
+   ==================================================================== */
+[hidden] { display: none !important; }
+body { margin: 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Auth tabs ---------- */
+.tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px;
+  background: var(--field); border: 1px solid var(--line); border-radius: 14px;
+}
+.tabs button {
+  height: 44px; border: 0; border-radius: 10px; background: transparent; color: var(--muted);
+  font-size: .9375rem; font-weight: 600; cursor: pointer;
+}
+.tabs button[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, .14); }
+.demo-banner { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+#v-auth { gap: 20px; }
+
+/* ====================================================================
+   Messenger
+   ==================================================================== */
+.app {
+  max-width: 1180px; margin-inline: auto;
+  height: min(860px, calc(100dvh - 64px)); min-height: 520px;
+  display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  background: var(--card); border: 1px solid var(--line); border-radius: 24px;
+  overflow: hidden; box-shadow: var(--shadow);
+}
+.side { min-width: 0; min-height: 0; display: flex; flex-direction: column; border-inline-end: 1px solid var(--line); }
+.side-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px 8px; }
+.me { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.me-text { display: grid; min-width: 0; line-height: 1.4; }
+.me-text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.me-text small, .peer-text small, .item-text small { color: var(--muted); font-size: .8125rem; }
+.avatar {
+  width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; line-height: 1;
+}
+.icon-btn {
+  width: 40px; height: 40px; flex: none; border: 0; border-radius: 12px; background: transparent;
+  color: var(--muted); display: grid; place-items: center; cursor: pointer;
+}
+.icon-btn:hover { background: var(--field); color: var(--accent); }
+.icon-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.search { position: relative; margin: 8px 16px 12px; }
+.search svg {
+  position: absolute; inset-inline-start: 14px; top: 50%; translate: 0 -50%; width: 18px; height: 18px;
+  fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; pointer-events: none;
+}
+.search input {
+  width: 100%; height: 46px; padding-inline: 42px 14px; border: 1.5px solid var(--line); border-radius: 14px;
+  background: var(--field); color: var(--ink); font-size: .9375rem;
+}
+.search input:focus-visible { outline: none; border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 4px var(--accent-soft); }
+
+.side-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 0 8px 8px; }
+.sec-title { display: flex; align-items: center; gap: 8px; margin: 14px 8px 6px; font-size: .8125rem; font-weight: 600; color: var(--muted); }
+.count { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 0 8px; font-size: .75rem; }
+.count:empty { display: none; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.item {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 8px; border: 0; border-radius: 14px;
+  background: transparent; color: inherit; font: inherit; text-align: start;
+}
+button.item { cursor: pointer; }
+button.item:hover { background: var(--field); }
+.item.active { background: var(--accent-soft); }
+.item-text { display: grid; min-width: 0; flex: 1; line-height: 1.5; }
+.item-text strong, .item-text small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item.unread .item-text strong { font-weight: 700; }
+.item.unread .item-text small { color: var(--ink); font-weight: 500; }
+.item-meta { display: grid; justify-items: end; gap: 6px; flex: none; font-size: .75rem; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.item-actions { display: flex; gap: 6px; flex: none; }
+.mini {
+  height: 34px; padding-inline: 12px; border-radius: 10px; border: 1.5px solid var(--line);
+  background: transparent; color: var(--ink); font-size: .8125rem; font-weight: 600; cursor: pointer;
+}
+.mini:hover { border-color: var(--accent); }
+.mini.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.muted-tag { font-size: .8125rem; color: var(--muted); }
+.empty-note { padding: 16px 12px; color: var(--muted); font-size: .9rem; }
+.side-foot { display: flex; justify-content: space-between; padding: 8px 16px; border-top: 1px solid var(--line); }
+.link-btn.danger { color: var(--danger); }
+.side-confirm { margin: 0 12px 12px; }
+.side-confirm .control input { height: 46px; }
+
+/* ---------- Conversation ---------- */
+.conv { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--field); }
+.conv-empty { margin: auto; padding: 32px; display: grid; justify-items: center; gap: 12px; text-align: center; max-width: 420px; }
+.conv-empty h2 { margin: 0; font-family: var(--font-display); font-size: 1.5rem; line-height: 1.4; }
+.conv-empty p { margin: 0; color: var(--muted); }
+.conv-main { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.conv-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--line); }
+.peer-text { display: grid; min-width: 0; flex: 1; line-height: 1.5; }
+.peer-text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conv-actions { display: flex; gap: 8px; flex: none; }
+.ghost.sm { height: 36px; padding-inline: 14px; border-radius: 10px; font-size: .8125rem; }
+.back { display: none; }
+.back svg { transform: none; }
+.banner { display: grid; gap: 10px; padding: 12px 16px; background: var(--accent-soft); border-bottom: 1px solid var(--line); font-size: .9rem; }
+.banner p { margin: 0; }
+.conv-confirm { margin: 12px 16px 0; }
+.reasons { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+.reasons label { display: flex; align-items: center; gap: 8px; font-size: .9rem; }
+.reasons input { accent-color: var(--danger); }
+
+.msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.msgs-empty { margin: auto; color: var(--muted); }
+.day {
+  align-self: center; margin-block: 8px; padding: 2px 12px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--line); color: var(--muted); font-size: .75rem;
+}
+.bubble { position: relative; display: grid; gap: 2px; max-width: min(78%, 520px); padding: 8px 14px 6px; border-radius: 18px; }
+.bubble.theirs { align-self: flex-start; background: var(--card); border: 1px solid var(--line); border-start-start-radius: 6px; }
+.bubble.mine { align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-start-end-radius: 6px; cursor: pointer; }
+.bubble .text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.bubble time { justify-self: end; font-size: .6875rem; opacity: .75; }
+.del-msg {
+  display: none; justify-self: end; margin-top: 4px; padding: 4px 10px; border-radius: 8px; cursor: pointer;
+  border: 1px solid currentColor; background: transparent; color: inherit; font-size: .75rem;
+}
+.bubble.show-actions .del-msg { display: block; }
+.bubble:focus-visible { outline-offset: 3px; }
+
+.composer {
+  display: flex; align-items: flex-end; gap: 10px; background: var(--card); border-top: 1px solid var(--line);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.composer textarea {
+  flex: 1; min-height: 48px; max-height: 140px; resize: none; padding: 12px 16px;
+  border: 1.5px solid var(--line); border-radius: 16px; background: var(--field); color: var(--ink);
+  font: inherit; line-height: 1.5;
+}
+.composer textarea:focus-visible { outline: none; border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 4px var(--accent-soft); }
+.composer textarea:disabled { opacity: .6; }
+.send {
+  width: 48px; height: 48px; flex: none; display: grid; place-items: center; border: 0; border-radius: 14px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+}
+.send svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: scaleX(-1); }
+.send:disabled { opacity: .45; cursor: not-allowed; }
+
+#toast {
+  position: fixed; inset-inline: 16px; top: calc(16px + env(safe-area-inset-top, 0px)); margin-inline: auto;
+  max-width: 440px; padding: 12px 16px; border-radius: 14px; text-align: center; font-size: .9rem; z-index: 50;
+  background: var(--ink); color: var(--bg); opacity: 0; transform: translateY(-8px); pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+#toast.show { opacity: 1; transform: none; }
+
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); height: calc(100dvh - 32px); min-height: 0; border-radius: 22px; }
+  .app[data-pane="list"] .conv { display: none; }
+  .app[data-pane="chat"] .side { display: none; }
+  .side { border-inline-end: 0; }
+  .back { display: grid; }
+  .conv-head { flex-wrap: wrap; }
+  .conv-actions { width: 100%; justify-content: flex-end; }
+  .bubble { max-width: 86%; }
+}
+</style>
+</head>
+<body>
+<!-- ============ الساعة: أول ما يظهر ============ -->
+<section class="stage" id="watchView" aria-label="ساعة">
+  <div class="watch">
+    <div class="strap top" aria-hidden="true"></div>
+    <div class="strap bottom" aria-hidden="true"></div>
+    <div class="crown" aria-hidden="true"></div>
+    <div class="case">
+      <div class="screen">
+        <svg class="dial" viewBox="0 0 200 200" role="img" aria-label="ساعة تناظرية">
+          <circle class="d-ring" cx="100" cy="100" r="97"/>
+          <g id="ticks"></g>
+          <text class="d-num" x="100" y="30">١٢</text>
+          <text class="d-num" x="170" y="100">٣</text>
+          <text class="d-num" x="100" y="170">٦</text>
+          <text class="d-num" x="30" y="100">٩</text>
+          <text class="d-digital" id="digital" x="100" y="136"></text>
+          <line class="d-hour" id="hHand" x1="100" y1="108" x2="100" y2="58"/>
+          <line class="d-min" id="mHand" x1="100" y1="110" x2="100" y2="36"/>
+          <line class="d-sec" id="sHand" x1="100" y1="116" x2="100" y2="24"/>
+          <circle class="d-hub" cx="100" cy="100" r="4.5"/>
+        </svg>
+        <button type="button" class="date-btn" id="dateBtn"><span id="dateText"></span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ الدخول وإنشاء الحساب ============ -->
+<main class="shell" id="authView" hidden>
+
+  <section class="formside">
+    <div class="view" id="v-load">
+      <div class="head">
+        <h1 data-heading>لحظة من فضلك</h1>
+        <p>نجهّز كل شيء.</p>
+      </div>
+      <span class="spin" style="color: var(--accent); width: 28px; height: 28px;" aria-hidden="true"></span>
+    </div>
+
+    <div class="view" id="v-fatal" hidden>
+      <div class="mark warn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5"/><path d="M12 16.5v.01"/><path d="M10.3 3.9L2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      </div>
+      <div class="head">
+        <h1 data-heading>تعذّر تشغيل البرنامج</h1>
+        <p id="fatalText"></p>
+      </div>
+    </div>
+
+    <div class="view" id="v-auth" hidden>
+      <p class="callout demo-banner" id="demoBanner" hidden>
+        <strong>وضع تجريبي.</strong> البيانات تُحفظ في هذا المتصفح فقط. لتجربة محادثة بين شخصين افتح تبويبًا ثانيًا، أو ابحث عن «نجمة الفجر». لربط Firebase املأ ملف <bdi dir="ltr">firebase-config.js</bdi>.
+      </p>
+
+      <div class="tabs" role="tablist" aria-label="الدخول أو إنشاء حساب">
+        <button type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="panel-login">دخول</button>
+        <button type="button" role="tab" id="tab-signup" aria-selected="false" aria-controls="panel-signup" tabindex="-1">حساب جديد</button>
+      </div>
+
+      <!-- دخول -->
+      <div id="panel-login" role="tabpanel" aria-labelledby="tab-login" class="view">
+        <div class="head">
+          <h1 data-heading>أهلًا بعودتك</h1>
+          <p>اكتب اسمك المستعار وكلمة المرور.</p>
+        </div>
+        <form id="login" novalidate>
+          <div class="field">
+            <div class="label-row"><label for="loginAlias">الاسم المستعار</label></div>
+            <div class="control"><input id="loginAlias" type="text" autocomplete="username" maxlength="30"></div>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="loginPw">كلمة المرور</label></div>
+            <div class="control">
+              <input id="loginPw" type="password" class="ltr has-eye" autocomplete="current-password">
+              <button type="button" class="eye" data-eye="loginPw" aria-pressed="false" aria-label="إظهار كلمة المرور">
+                <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>
+              </button>
+            </div>
+          </div>
+          <p class="error form-error" id="login-error" role="alert" hidden></p>
+          <button type="submit" class="submit" id="loginBtn"><span class="spin" hidden aria-hidden="true"></span><span class="lbl">دخول</span></button>
+        </form>
+      </div>
+
+      <!-- حساب جديد -->
+      <div id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" class="view" hidden>
+        <div class="head">
+          <h1 data-heading>أنشئ حسابك</h1>
+          <p>دقيقة واحدة وتبدأ. لا نطلب اسمك الحقيقي ولا بريدك الإلكتروني.</p>
+        </div>
+        <form id="signup" novalidate>
+          <div class="field">
+            <div class="label-row">
+              <label for="alias">الاسم المستعار</label>
+              <button type="button" class="link-btn" id="suggest">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg>
+                اقترح لي اسمًا
+              </button>
+            </div>
+            <div class="control"><input id="alias" type="text" autocomplete="off" maxlength="30" placeholder="مثال: ظلّ هادئ" aria-describedby="alias-hint alias-error"></div>
+            <p class="hint" id="alias-hint">بهذا الاسم يبحث عنك الآخرون ويراك في المحادثات. لا يمكن تغييره لاحقًا.</p>
+            <p class="error" id="alias-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <div class="label-row"><label for="password">كلمة المرور</label></div>
+            <div class="control">
+              <input id="password" type="password" class="ltr has-eye" autocomplete="new-password" placeholder="٨ أحرف على الأقل" aria-describedby="pw-error">
+              <button type="button" class="eye" data-eye="password" aria-pressed="false" aria-label="إظهار كلمة المرور">
+                <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>
+              </button>
+            </div>
+            <div class="strength">
+              <div class="meter" id="meter" data-level="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <span class="meter-label" id="meterLabel"></span>
+            </div>
+            <p class="error" id="pw-error" hidden></p>
+          </div>
+
+          <p class="callout"><strong>لا توجد استعادة لكلمة المرور.</strong> لأننا لا نحفظ بريدًا إلكترونيًا، فإن نسيتها فقدت الحساب. احفظها جيدًا.</p>
+
+          <div class="check-wrap">
+            <div class="check">
+              <input type="checkbox" id="terms" aria-describedby="terms-error">
+              <label for="terms">أؤكد أن عمري ١٨ عامًا أو أكثر، وأوافق على شروط الاستخدام وسياسة الخصوصية.</label>
+            </div>
+            <p class="error" id="terms-error" hidden></p>
+          </div>
+
+          <p class="error form-error" id="signup-error" role="alert" hidden></p>
+          <button type="submit" class="submit" id="signupBtn"><span class="spin" hidden aria-hidden="true"></span><span class="lbl">إنشاء الحساب</span></button>
+        </form>
+        <p class="privacy-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <span>كلمة مرورك تُحفظ مشفّرة ولا يراها أحد. والمحادثات محمية بقواعد أمان فلا يفتحها داخل التطبيق إلا طرفاها.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <aside class="panel" aria-label="عن بوح">
+    <button type="button" class="hide-app" data-hide>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>
+      إخفاء
+    </button>
+    <svg class="lattice" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="lat" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M30 0L60 30L30 60L0 30Z M15 15H45V45H15Z" fill="none" stroke="currentColor" stroke-width="1"/>
+          <circle cx="30" cy="30" r="3.5" fill="none" stroke="currentColor" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#lat)"/>
+    </svg>
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="12" fill="var(--bright)"/>
+        <path d="M12 11h16a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-8l-6 5v-5h-2a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3z" fill="var(--panel)"/>
+        <circle cx="20" cy="17.5" r="2.4" fill="var(--bright)"/>
+        <path d="M18.9 19.5h2.2l.9 4.2h-4z" fill="var(--bright)"/>
+      </svg>
+      <span>بوح</span>
+    </div>
+    <div class="pitch">
+      <h2>قُل ما في قلبك، دون أن يعرفك أحد.</h2>
+      <p>محادثات خاصة بين شخصين بهوية مستعارة. ابحث عن اسم، أرسل طلبًا، وتحدثا حين يوافق.</p>
+    </div>
+    <div class="chat" aria-hidden="true">
+      <span class="chat-label">مثال على محادثة</span>
+      <div class="msg"><b>ظلّ هادئ</b>لم أخبر أحدًا من قبل، لكنني أشعر أنني أستطيع قولها هنا.</div>
+      <div class="msg out"><b>نجمة الفجر</b>نحن نسمعك. خذ وقتك.</div>
+      <div class="typing"><i></i><i></i><i></i></div>
+    </div>
+    <dl class="points">
+      <div><dt>هوية مستعارة</dt><dd>لا نطلب اسمك الحقيقي أبدًا.</dd></div>
+      <div><dt>بموافقة الطرفين</dt><dd>لا تصلك رسالة إلا بعد أن تقبل الطلب.</dd></div>
+      <div><dt>تحكّم كامل</dt><dd>احذف حسابك ورسائلك متى شئت.</dd></div>
+    </dl>
+  </aside>
+</main>
+
+<!-- ============ التطبيق بعد الدخول ============ -->
+<div class="app" id="appView" data-pane="list" hidden>
+
+  <aside class="side" aria-label="المحادثات">
+    <header class="side-head">
+      <div class="me">
+        <span class="avatar" id="meAvatar" aria-hidden="true"></span>
+        <div class="me-text">
+          <strong id="meAlias"></strong>
+          <small>متصل بهوية مستعارة</small>
+        </div>
+      </div>
+      <div class="side-actions">
+        <button type="button" class="icon-btn" data-hide aria-label="إخفاء التطبيق وقفله" title="إخفاء">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" autocomplete="off" placeholder="ابحث عن اسم مستعار" aria-label="ابحث عن اسم مستعار" maxlength="30">
+    </div>
+
+    <div class="side-scroll" id="sideScroll">
+      <section id="searchBox" hidden>
+        <h2 class="sec-title">نتائج البحث</h2>
+        <ul class="list" id="searchList"></ul>
+      </section>
+
+      <section id="reqBox" hidden>
+        <h2 class="sec-title">طلبات محادثة <span class="count" id="reqCount"></span></h2>
+        <ul class="list" id="reqList"></ul>
+      </section>
+
+      <section>
+        <h2 class="sec-title">المحادثات</h2>
+        <ul class="list" id="chatList"></ul>
+        <div class="empty-note" id="chatEmpty" hidden>
+          لا توجد محادثات بعد. اكتب اسمًا في خانة البحث لتبدأ.
+        </div>
+      </section>
+    </div>
+
+    <footer class="side-foot">
+      <button type="button" class="link-btn" id="logoutBtn">تسجيل الخروج</button>
+      <button type="button" class="link-btn danger" id="delAsk">حذف الحساب</button>
+    </footer>
+
+    <div class="confirm-box side-confirm" id="delBox" hidden>
+      <p><strong>حذف الحساب نهائي.</strong> يُحذف اسمك ورسائلك وتُنهى كل محادثاتك. اكتب كلمة المرور للتأكيد.</p>
+      <div class="control"><input id="delPw" type="password" class="ltr" autocomplete="current-password" aria-label="كلمة المرور للتأكيد"></div>
+      <p class="error" id="del-error" role="alert" hidden></p>
+      <div class="row">
+        <button type="button" class="danger-solid" id="delYes">احذف حسابي</button>
+        <button type="button" class="ghost" id="delNo">تراجع</button>
+      </div>
+    </div>
+  </aside>
+
+  <section class="conv" aria-label="المحادثة">
+    <div class="conv-empty" id="convEmpty">
+      <div class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg></div>
+      <h2>اختر محادثة أو ابحث عن اسم</h2>
+      <p>تحدّث بصدق، لكن لا تشارك ما يكشف هويتك: اسمك الحقيقي، مكان عملك، رقمك أو صورك.</p>
+    </div>
+
+    <div class="conv-main" id="convMain" hidden>
+      <header class="conv-head">
+        <button type="button" class="icon-btn back" id="backBtn" aria-label="رجوع إلى المحادثات">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <span class="avatar" id="peerAvatar" aria-hidden="true"></span>
+        <div class="peer-text"><strong id="peerAlias"></strong><small id="peerState"></small></div>
+        <div class="conv-actions">
+          <button type="button" class="ghost sm" id="reportBtn">إبلاغ</button>
+          <button type="button" class="ghost sm danger" id="blockBtn">إنهاء وحظر</button>
+        </div>
+      </header>
+
+      <div class="banner" id="banner" hidden></div>
+
+      <div class="confirm-box conv-confirm" id="blockBox" hidden>
+        <p><strong>إنهاء المحادثة وحظر <bdi id="blockName"></bdi>؟</strong> لن يستطيع أيٌّ منكما إرسال رسائل بعد ذلك، ولا يمكن بدء محادثة جديدة بينكما.</p>
+        <div class="row">
+          <button type="button" class="danger-solid" id="blockYes">نعم، أنهِ وحظر</button>
+          <button type="button" class="ghost" id="blockNo">تراجع</button>
+        </div>
+      </div>
+
+      <form class="confirm-box conv-confirm" id="reportBox" hidden>
+        <p><strong>إبلاغ عن <bdi id="reportName"></bdi></strong> سيصلنا البلاغ وتُنهى المحادثة فورًا.</p>
+        <fieldset class="reasons">
+          <legend class="sr">سبب البلاغ</legend>
+          <label><input type="radio" name="reason" value="إساءة أو تنمّر" checked> إساءة أو تنمّر</label>
+          <label><input type="radio" name="reason" value="تحرّش"> تحرّش</label>
+          <label><input type="radio" name="reason" value="محتوى غير لائق"> محتوى غير لائق</label>
+          <label><input type="radio" name="reason" value="ابتزاز أو تهديد"> ابتزاز أو تهديد</label>
+          <label><input type="radio" name="reason" value="سبب آخر"> سبب آخر</label>
+        </fieldset>
+        <div class="control"><input id="reportNote" type="text" maxlength="300" placeholder="تفاصيل إضافية (اختياري)" aria-label="تفاصيل إضافية"></div>
+        <p class="error" id="report-error" role="alert" hidden></p>
+        <div class="row">
+          <button type="submit" class="danger-solid" id="reportYes">إرسال البلاغ</button>
+          <button type="button" class="ghost" id="reportNo">تراجع</button>
+        </div>
+      </form>
+
+      <div class="msgs" id="msgs" role="log" aria-live="polite" aria-label="الرسائل"></div>
+
+      <form class="composer" id="composer">
+        <label class="sr" for="msgInput">اكتب رسالة</label>
+        <textarea id="msgInput" rows="1" maxlength="2000" placeholder="اكتب رسالتك…"></textarea>
+        <button type="submit" class="send" id="sendBtn" aria-label="إرسال">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3L10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
+</div>
+<script type="module">
+/* ===== إعدادات Firebase ===== */
+// إعدادات مشروعك على Firebase (مشروع chat-bouh-2-b68a0).
+// هذه القيم عامة وليست سرية؛ الحماية الحقيقية في ملف firestore.rules.
+// لو تركتها فارغة يعمل البرنامج في "الوضع التجريبي" داخل المتصفح فقط.
+const firebaseConfig = {
+  apiKey: "AIzaSyDeSgxXmvhqpzDzYjgMf8xvm7IzM7pRkdc",
+  authDomain: "chat-bouh-2-b68a0.firebaseapp.com",
+  projectId: "chat-bouh-2-b68a0",
+  storageBucket: "chat-bouh-2-b68a0.firebasestorage.app",
+  messagingSenderId: "192278339200",
+  appId: "1:192278339200:web:aad6468aa9d0273cf39065"
+};
+
+/* ===== الوضع التجريبي ===== */
+const demoModule = (() => {
+// الوضع التجريبي: قاعدة بيانات صغيرة داخل المتصفح تحاكي واجهة Firebase المستخدمة في البرنامج.
+// البيانات في localStorage (مشتركة بين تبويبات نفس المتصفح)، وكل تبويب له جلسة دخول مستقلة،
+// فافتح تبويبين وسجّل بحسابين مختلفين لتجرّب المحادثة بين شخصين.
+// ليست للإنتاج: لا تطبّق قواعد الأمان ولا تحمي أي شيء.
+
+const STORE = "bawh-demo-v1";
+const SESSION = "bawh-demo-uid";
+const BOT = "demo-bot";
+const BOT_ALIAS = "نجمة الفجر";
+
+/* ---------- Timestamp ---------- */
+class Timestamp {
+  constructor(ms) { this.ms = ms; }
+  toMillis() { return this.ms; }
+  toDate() { return new Date(this.ms); }
+}
+const SENTINEL = { __sentinel: "serverTimestamp" };
+const serverTimestamp = () => SENTINEL;
+
+function enc(v, now) {
+  if (v === SENTINEL) return { __ts: now };
+  if (v instanceof Timestamp) return { __ts: v.ms };
+  if (Array.isArray(v)) return v.map((x) => enc(x, now));
+  if (v && typeof v === "object") {
+    const o = {};
+    for (const k of Object.keys(v)) o[k] = enc(v[k], now);
+    return o;
+  }
+  return v;
+}
+function dec(v) {
+  if (Array.isArray(v)) return v.map(dec);
+  if (v && typeof v === "object") {
+    const keys = Object.keys(v);
+    if (keys.length === 1 && keys[0] === "__ts") return new Timestamp(v.__ts);
+    const o = {};
+    for (const k of keys) o[k] = dec(v[k]);
+    return o;
+  }
+  return v;
+}
+
+/* ---------- Storage ---------- */
+let memStore = null; // احتياط لو منع المتصفح التخزين
+function readStore() { try { return localStorage.getItem(STORE); } catch (e) { return memStore; } }
+function writeStore(v) { memStore = v; try { localStorage.setItem(STORE, v); } catch (e) { /* ignore */ } }
+function load() {
+  try {
+    const s = JSON.parse(readStore());
+    if (s && s.docs && s.auth) return s;
+  } catch (e) { /* ignore */ }
+  return { docs: {}, auth: {} };
+}
+function save(s) { writeStore(JSON.stringify(s)); }
+function uid() { return "d" + Math.random().toString(36).slice(2, 12) + Date.now().toString(36).slice(-4); }
+
+/* ---------- Refs and snapshots ---------- */
+function seg(args) {
+  const parts = [];
+  for (const a of args) for (const p of String(a).split("/")) if (p) parts.push(p);
+  return parts;
+}
+function doc(dbOrRef, ...rest) {
+  if (dbOrRef && dbOrRef.type === "col" && rest.length === 0) {
+    const id = uid();
+    return { type: "doc", path: dbOrRef.path + "/" + id, id };
+  }
+  const parts = seg(rest);
+  const base = dbOrRef && dbOrRef.type === "col" ? seg([dbOrRef.path]) : [];
+  const all = base.concat(parts);
+  return { type: "doc", path: all.join("/"), id: all[all.length - 1] };
+}
+function collection(dbOrRef, ...rest) {
+  const base = dbOrRef && dbOrRef.type === "doc" ? seg([dbOrRef.path]) : [];
+  return { type: "col", path: base.concat(seg(rest)).join("/") };
+}
+const where = (f, op, v) => ({ t: "where", f, op, v });
+const orderBy = (f, dir) => ({ t: "orderBy", f, dir: dir || "asc" });
+const limit = (n) => ({ t: "limit", n });
+const limitToLast = (n) => ({ t: "limitToLast", n });
+function query(col, ...cons) { return { type: "query", path: col.path, cons }; }
+
+function docSnap(path, raw) {
+  const id = path.split("/").pop();
+  return {
+    id,
+    ref: { type: "doc", path, id },
+    exists: () => raw !== undefined,
+    data: () => (raw === undefined ? undefined : dec(raw)),
+    metadata: { hasPendingWrites: false }
+  };
+}
+function getField(raw, f) {
+  let cur = raw;
+  for (const k of f.split(".")) {
+    if (cur == null) return undefined;
+    cur = cur[k];
+  }
+  return cur;
+}
+const norm = (v) => (v && typeof v === "object" && "__ts" in v ? v.__ts : v);
+function cmp(a, b) { a = norm(a); b = norm(b); return a < b ? -1 : a > b ? 1 : 0; }
+function test(val, op, target) {
+  val = norm(val);
+  switch (op) {
+    case "==": return JSON.stringify(val) === JSON.stringify(target);
+    case "array-contains": return Array.isArray(val) && val.includes(target);
+    case ">=": return val !== undefined && val >= target;
+    case "<=": return val !== undefined && val <= target;
+    case ">": return val !== undefined && val > target;
+    case "<": return val !== undefined && val < target;
+    default: return false;
+  }
+}
+function runQuery(state, q) {
+  const depth = q.path.split("/").length + 1;
+  let rows = Object.entries(state.docs).filter(([p]) => p.startsWith(q.path + "/") && p.split("/").length === depth);
+  for (const c of q.cons) if (c.t === "where") rows = rows.filter(([, d]) => test(getField(d, c.f), c.op, c.v));
+  const ob = q.cons.find((c) => c.t === "orderBy");
+  if (ob) {
+    rows = rows.filter(([, d]) => getField(d, ob.f) !== undefined);
+    rows.sort((a, b) => cmp(getField(a[1], ob.f), getField(b[1], ob.f)) * (ob.dir === "desc" ? -1 : 1));
+  } else {
+    rows.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+  }
+  const lim = q.cons.find((c) => c.t === "limit");
+  if (lim) rows = rows.slice(0, lim.n);
+  const last = q.cons.find((c) => c.t === "limitToLast");
+  if (last) rows = rows.slice(-last.n);
+  return rows;
+}
+function querySnap(rows) {
+  const docs = rows.map(([p, d]) => docSnap(p, d));
+  return { docs, size: docs.length, empty: docs.length === 0, forEach: (fn) => docs.forEach(fn), metadata: { hasPendingWrites: false } };
+}
+
+/* ---------- Reads and listeners ---------- */
+const listeners = new Set();
+function evaluate(l, state) {
+  if (l.ref.type === "doc") {
+    const raw = state.docs[l.ref.path];
+    return { sig: JSON.stringify(raw ?? null), snap: docSnap(l.ref.path, raw) };
+  }
+  const rows = runQuery(state, l.ref);
+  return { sig: JSON.stringify(rows), snap: querySnap(rows) };
+}
+function notify() {
+  const state = load();
+  for (const l of listeners) {
+    const r = evaluate(l, state);
+    if (r.sig !== l.sig) { l.sig = r.sig; try { l.cb(r.snap); } catch (e) { console.error(e); } }
+  }
+}
+window.addEventListener("storage", (e) => { if (e.key === STORE) notify(); });
+
+async function getDoc(ref) { return docSnap(ref.path, load().docs[ref.path]); }
+async function getDocs(q) { return querySnap(runQuery(load(), q)); }
+function onSnapshot(ref, cb) {
+  const l = { ref, cb, sig: null };
+  listeners.add(l);
+  setTimeout(() => {
+    if (!listeners.has(l)) return;
+    const r = evaluate(l, load());
+    l.sig = r.sig;
+    cb(r.snap);
+  }, 0);
+  return () => listeners.delete(l);
+}
+
+/* ---------- Writes ---------- */
+function setNested(obj, dotted, value) {
+  const parts = dotted.split(".");
+  let cur = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (cur[parts[i]] == null || typeof cur[parts[i]] !== "object") cur[parts[i]] = {};
+    cur = cur[parts[i]];
+  }
+  cur[parts[parts.length - 1]] = value;
+}
+function applyOps(ops) {
+  const state = load();
+  const now = Date.now();
+  const touched = [];
+  for (const op of ops) {
+    if (op.kind === "set") state.docs[op.path] = enc(op.data, now);
+    else if (op.kind === "update") {
+      const cur = state.doc
